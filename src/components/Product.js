@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { StarIcon } from '@heroicons/react/solid'
-
+import { HiStar } from 'react-icons/hi2'
 const MAX_RATING = 5
 const MIN_RATING = 1
 
@@ -26,7 +25,7 @@ function Product({ id, title, price, description, category, image }) {
 
             <div className='flex'>
                 {Array(rating).fill().map((_, i) => (
-                    <StarIcon className='h-5 text-yellow-500' />
+                    <HiStar className='h-5 text-yellow-500' />
                 ))}
             </div>
 
