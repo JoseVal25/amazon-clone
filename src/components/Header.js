@@ -5,6 +5,7 @@ import {
   HiOutlineMagnifyingGlass,
   HiOutlineShoppingCart
 } from 'react-icons/hi2'
+import { signIn, signOUt, useSession } from 'next-auth/react'
 
 function Header() {
   return (
@@ -28,7 +29,7 @@ function Header() {
         </div>
         {/*  Right */}
         <div className='text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap md:text-sm'>
-          <div className='link'>
+          <div onClick={signIn} className='link'>
             <p>Hello Jose Valencia</p>
             <p className='font-extrabold md:text-sm'>Account & List</p>
           </div>
