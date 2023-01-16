@@ -1,9 +1,11 @@
 import React from 'react'
 import Header from '../components/Header'
 import { getSession, useSession } from 'next-auth/react'
+import db from '../../firebase'
+import moment from 'moment/moment'
 
 function Orders({ orders }) {
-
+    console.log(orders)
     const { data: session } = useSession()
     return (
         <div>
@@ -18,7 +20,7 @@ function Orders({ orders }) {
                     <h2>Please sign in to see your orders</h2>
                 )}
                 <div className='mt-5 space-y-4'>
-
+                    {/* {orders?.map()} */}
                 </div>
             </main>
         </div>
@@ -30,7 +32,7 @@ export default Orders
 export async function getServerSideProps(context) {
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     // Get users logged in credentials...
-    const session = getSession(context);
+    const session = await getSession(context);
     if (!session) {
         return {
             props: {},
@@ -43,6 +45,25 @@ export async function getServerSideProps(context) {
         .collection("orders")
         .orderBy('timestamp', 'desc')
         .get()
+
     // Stripe orders
-    
+    const orders = await Promise.all(
+        stripeOrders.docs.map(async (order) => ({
+            id: order.id,
+            amount: order.data().amount,
+            amountShipping: order.data().amount_shipping,
+            images: order.data().images,
+            timestamp: moment(order.data().timestamp.toDate()).unix(),
+            items: (
+                await stripe.checkout.sessions.listLineItems(order.id, {
+                    limit: 100
+                })
+            ).data,
+        }))
+    )
+    return {
+        props: {
+            // orders,
+        }
+    }
 }
