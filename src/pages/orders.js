@@ -3,9 +3,9 @@ import Header from '../components/Header'
 import { getSession, useSession } from 'next-auth/react'
 import db from '../../firebase'
 import moment from 'moment/moment'
+import Order from '../components/Order'
 
 function Orders({ orders }) {
-    console.log(orders)
     const { data: session } = useSession()
     return (
         <div>
@@ -15,12 +15,24 @@ function Orders({ orders }) {
                 <h1 className='text-3xl border-b mb-2 pb-1 border-yellow-400'>Your Orders</h1>
 
                 {session ? (
-                    <h2>x Orders</h2>
+                    <h2>{orders.length} Orders</h2>
                 ) : (
                     <h2>Please sign in to see your orders</h2>
                 )}
                 <div className='mt-5 space-y-4'>
-                    {/* {orders?.map()} */}
+                    {orders?.map((
+                        { id, amount, amountShipping, images, timestamp, items }
+                    ) => (
+                        <Order
+                            key={id}
+                            id={id} 
+                            amount={amount} 
+                            amountShipping={amountShipping} 
+                            images={images} 
+                            timestamp={timestamp} 
+                            items={items}
+                        />
+                    ))}
                 </div>
             </main>
         </div>
@@ -63,7 +75,7 @@ export async function getServerSideProps(context) {
     )
     return {
         props: {
-            orders
+            orders,
         }
     }
 }
